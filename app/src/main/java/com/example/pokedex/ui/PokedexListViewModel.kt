@@ -2,6 +2,7 @@ package com.example.pokedex.ui
 
 import android.os.Parcelable
 import androidx.lifecycle.*
+import com.example.pokedex.DI
 import com.example.pokedex.domain.ListItem
 import com.example.pokedex.domain.PokemonList
 import com.example.pokedex.usecase.GetAllPokemonUseCase
@@ -16,7 +17,7 @@ private const val STATE_KEY = "POKEDEX_LIST_STATE_KEY"
 
 class PokedexListViewModel @JvmOverloads constructor(
     private val savedStateHandle: SavedStateHandle,
-    private val getAllPokemonUseCase: GetAllPokemonUseCase
+    private val getAllPokemonUseCase: GetAllPokemonUseCase = DI.instance.getAllPokemonUseCase
 ): ViewModel() {
     init {
         loadPokemonList()

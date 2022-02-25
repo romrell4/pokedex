@@ -1,5 +1,6 @@
 package com.example.pokedex.repo
 
+import android.content.Context
 import com.example.pokedex.domain.PokemonList
 import retrofit2.Call
 import retrofit2.Retrofit
@@ -10,8 +11,8 @@ interface PokedexRepository {
     suspend fun getAllPokemon(): Call<PokemonList>
 }
 
-class PokedexRepositoryImpl : PokedexRepository {
-    private val baseUrl = "https://pokeapi.co/api/v2"
+class PokedexRepositoryImpl(context: Context) : PokedexRepository {
+    private val baseUrl = "https://pokeapi.co/api/v2/"
 
     private val client = Retrofit.Builder()
         .baseUrl(baseUrl)
@@ -20,7 +21,7 @@ class PokedexRepositoryImpl : PokedexRepository {
         .create(PokedexClient::class.java)
 
     private interface PokedexClient {
-        @GET ("/pokemon")
+        @GET ("pokemon")
         fun getAllPokemon(): Call<PokemonList>
     }
 
