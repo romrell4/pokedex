@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.pokedex.databinding.FragmentPokedexListBinding
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -21,8 +22,9 @@ class PokedexListFragment : Fragment() {
     private val viewModel: PokedexListViewModel by viewModels {
         defaultViewModelProviderFactory
     }
-
     private lateinit var binding: FragmentPokedexListBinding
+
+    private val adapter = PokedexListAdapter()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,8 +40,17 @@ class PokedexListFragment : Fragment() {
 
         lifecycleScope.launch {
             viewModel.viewStateFlow.collect {
-                binding.textHome.text = it.list?.get(0)?.name
+                render(it)
             }
         }
+
+        binding.pokedexListRecyclerView.also {
+            it.adapter = adapter
+            it.layoutManager = LinearLayoutManager(context)
+        }
+    }
+
+    private fun render(viewState: PokedexListViewState) {
+        adapter.submitList(viewState.list)
     }
 }
