@@ -44,10 +44,7 @@ class PokedexListFragment : Fragment() {
             }
         }
 
-        binding.pokedexListRecyclerView.also {
-            it.adapter = adapter
-            it.layoutManager = LinearLayoutManager(context)
-        }
+        binding.pokedexListRecyclerView.adapter = adapter
     }
 
     private fun render(viewState: PokedexListViewState) {

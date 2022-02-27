@@ -1,13 +1,11 @@
 package com.example.pokedex.ui
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pokedex.databinding.ViewHolderPokedexListItemBinding
-import com.example.pokedex.domain.ListItem
 
 class PokedexListAdapter : ListAdapter<PokedexListViewState.PokedexListItem, PokedexListViewHolder>(
     object : DiffUtil.ItemCallback<PokedexListViewState.PokedexListItem>() {

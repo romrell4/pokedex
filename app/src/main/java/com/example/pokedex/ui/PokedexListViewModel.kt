@@ -24,7 +24,7 @@ class PokedexListViewModel @JvmOverloads constructor(
 
     private val stateFlow: MutableStateFlow<PokedexListState> = MutableStateFlow(
         savedStateHandle.get(STATE_KEY) ?: PokedexListState(
-            Loading
+            listState = Loading
         )
     )
 
