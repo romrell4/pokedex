@@ -6,6 +6,7 @@ import com.example.pokedex.DI
 import com.example.pokedex.domain.ListItem
 import com.example.pokedex.domain.PokemonList
 import com.example.pokedex.usecase.GetAllPokemonUseCase
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -17,7 +18,6 @@ private const val STATE_KEY = "POKEDEX_LIST_STATE_KEY"
 
 class PokedexListViewModel @JvmOverloads constructor(
     private val savedStateHandle: SavedStateHandle,
-    private val getAllPokemonUseCase: GetAllPokemonUseCase = DI.instance.getAllPokemonUseCase
 ): ViewModel() {
     init {
         loadPokemonList()
@@ -35,7 +35,8 @@ class PokedexListViewModel @JvmOverloads constructor(
 
     private fun loadPokemonList() {
         viewModelScope.launch {
-            stateFlow.value = PokedexListState(getAllPokemonUseCase.execute())
+            val getAllPokemonUseCase: GetAllPokemonUseCase = DI.instance.getAllPokemonUseCase(viewModelScope)
+            stateFlow.value = stateFlow.value.copy(pokemonList = PokedexListState(getAllPokemonUseCase.execute()))
         }
     }
 }

@@ -7,6 +7,7 @@ import com.example.pokedex.repo.PokedexRepository
 import com.example.pokedex.repo.PokedexRepositoryImpl
 import com.example.pokedex.usecase.GetAllPokemonUseCase
 import com.example.pokedex.usecase.GetAllPokemonUseCaseImpl
+import kotlinx.coroutines.CoroutineScope
 
 class PokedexApp : Application() {
     override fun onCreate() {
@@ -25,8 +26,8 @@ class DI(
             internal set
     }
     // Repos
-    private val pokedexRepo: PokedexRepository by lazy { PokedexRepositoryImpl(context) }
+    private val pokedexRepo: PokedexRepository by lazy { PokedexRepositoryImpl() }
 
     // UseCase
-    val getAllPokemonUseCase: GetAllPokemonUseCase by lazy { GetAllPokemonUseCaseImpl(pokedexRepo) }
+    fun getAllPokemonUseCase(scope: CoroutineScope) = GetAllPokemonUseCaseImpl(pokedexRepo, scope)
 }

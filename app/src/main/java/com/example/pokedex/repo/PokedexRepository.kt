@@ -11,7 +11,7 @@ interface PokedexRepository {
     suspend fun getAllPokemon(): Call<PokemonList>
 }
 
-class PokedexRepositoryImpl(context: Context) : PokedexRepository {
+class PokedexRepositoryImpl : PokedexRepository {
     private val baseUrl = "https://pokeapi.co/api/v2/"
 
     private val client = Retrofit.Builder()

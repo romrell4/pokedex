@@ -1,4 +1,4 @@
-package com.example.pokedex
+package com.example.pokedex.ui
 
 import android.os.Bundle
 import com.google.android.material.bottomnavigation.BottomNavigationView
