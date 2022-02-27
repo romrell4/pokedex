@@ -9,11 +9,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.pokedex.databinding.ViewHolderPokedexListItemBinding
 import com.example.pokedex.domain.ListItem
 
-class PokedexListAdapter : ListAdapter<ListItem, PokedexListViewHolder>(
-    object : DiffUtil.ItemCallback<ListItem>() {
-        override fun areItemsTheSame(oldItem: ListItem, newItem: ListItem) = oldItem.name == newItem.name
+class PokedexListAdapter : ListAdapter<PokedexListViewState.PokedexListItem, PokedexListViewHolder>(
+    object : DiffUtil.ItemCallback<PokedexListViewState.PokedexListItem>() {
+        override fun areItemsTheSame(oldItem: PokedexListViewState.PokedexListItem, newItem: PokedexListViewState.PokedexListItem) = oldItem.name == newItem.name
 
-        override fun areContentsTheSame(oldItem: ListItem, newItem: ListItem): Boolean =
+        override fun areContentsTheSame(oldItem: PokedexListViewState.PokedexListItem, newItem: PokedexListViewState.PokedexListItem): Boolean =
             oldItem == newItem
     }
 ) {
@@ -28,8 +28,8 @@ class PokedexListAdapter : ListAdapter<ListItem, PokedexListViewHolder>(
 }
 
 class PokedexListViewHolder(private val binding: ViewHolderPokedexListItemBinding) : RecyclerView.ViewHolder(binding.root) {
-    fun bind(item: ListItem) {
+    fun bind(item: PokedexListViewState.PokedexListItem) {
         binding.nameText.text = item.name
-        binding.numberText.text = item.url
+        binding.idText.text = item.id
     }
 }

@@ -2,6 +2,10 @@ package com.example.pokedex.usecase
 
 import com.example.pokedex.domain.PokemonList
 import com.example.pokedex.repo.PokedexRepository
+import com.example.pokedex.domain.AsyncOperation
+import com.example.pokedex.domain.Error
+import com.example.pokedex.domain.Loading
+import com.example.pokedex.domain.Success
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow

@@ -3,14 +3,9 @@ package com.example.pokedex.ui
 import android.os.Parcelable
 import androidx.lifecycle.*
 import com.example.pokedex.DI
-import com.example.pokedex.domain.ListItem
-import com.example.pokedex.domain.PokemonList
+import com.example.pokedex.domain.*
 import com.example.pokedex.usecase.GetAllPokemonUseCase
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
 
@@ -29,27 +24,48 @@ class PokedexListViewModel @JvmOverloads constructor(
 
     private val stateFlow: MutableStateFlow<PokedexListState> = MutableStateFlow(
         savedStateHandle.get(STATE_KEY) ?: PokedexListState(
-            pokemonList = null
+            Loading
         )
     )
 
     private fun loadPokemonList() {
         viewModelScope.launch {
             val getAllPokemonUseCase: GetAllPokemonUseCase = DI.instance.getAllPokemonUseCase(viewModelScope)
-            stateFlow.value = stateFlow.value.copy(pokemonList = PokedexListState(getAllPokemonUseCase.execute()))
+            getAllPokemonUseCase.execute().collect {
+                stateFlow.value = stateFlow.value.copy(listState = it)
+            }
         }
     }
 }
 
 @Parcelize
 data class PokedexListState(
-    val pokemonList: PokemonList?
+    val listState: AsyncOperation<PokemonList>
 ) : Parcelable {
-    fun toViewState() = PokedexListViewState(
-        list = pokemonList?.results
-    )
+    fun toViewState() =
+        when (listState) {
+            is Error -> PokedexListViewState(emptyList(), listState.error, false)
+            Loading -> PokedexListViewState(emptyList(), null, true)
+            is Success -> PokedexListViewState(
+                list = listState.successData.results.map {
+                    PokedexListViewState.PokedexListItem(
+                        name = it.name,
+                        id = it.url.split("/").lastOrNull() ?: ""
+                    )
+                },
+                error = null,
+                isLoading = false
+            )
+        }
 }
 
 data class PokedexListViewState(
-    val list: List<ListItem>?
-)
+    val list: List<PokedexListItem>,
+    val error: Throwable? = null,
+    val isLoading: Boolean = false,
+) {
+    data class PokedexListItem(
+        val name: String,
+        val id: String
+    )
+}
