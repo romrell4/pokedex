@@ -45,9 +45,13 @@ class PokedexListFragment : Fragment() {
         }
 
         binding.pokedexListRecyclerView.adapter = adapter
+        binding.recyclerViewRefresh.setOnRefreshListener {
+            viewModel.loadPokemonList()
+        }
     }
 
     private fun render(viewState: PokedexListViewState) {
         adapter.submitList(viewState.list)
+        binding.recyclerViewRefresh.isRefreshing = viewState.isLoading
     }
 }

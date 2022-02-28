@@ -11,15 +11,20 @@ import kotlinx.parcelize.Parcelize
 
 private const val STATE_KEY = "POKEDEX_LIST_STATE_KEY"
 
-class PokedexListViewModel @JvmOverloads constructor(
-    private val savedStateHandle: SavedStateHandle,
-): ViewModel() {
+class PokedexListViewModel(
+    savedStateHandle: SavedStateHandle,
+) : ViewModel() {
     init {
-        loadPokemonList()
+        if (savedStateHandle.get<PokedexListState>(STATE_KEY)?.cachedList?.isNotEmpty() != false) {
+            loadPokemonList()
+        }
     }
 
     val viewStateFlow: Flow<PokedexListViewState> by lazy {
-        stateFlow.map { it.toViewState() }.distinctUntilChanged()
+        stateFlow
+            .onEach { savedStateHandle[STATE_KEY] = it }
+            .map { it.toViewState() }
+            .distinctUntilChanged()
     }
 
     private val stateFlow: MutableStateFlow<PokedexListState> = MutableStateFlow(
@@ -28,11 +33,16 @@ class PokedexListViewModel @JvmOverloads constructor(
         )
     )
 
-    private fun loadPokemonList() {
+    fun loadPokemonList() {
         viewModelScope.launch {
-            val getAllPokemonUseCase: GetAllPokemonUseCase = DI.instance.getAllPokemonUseCase(viewModelScope)
+            val getAllPokemonUseCase = DI.instance.getAllPokemonUseCase(viewModelScope)
             getAllPokemonUseCase.execute().collect {
-                stateFlow.value = stateFlow.value.copy(listState = it)
+                stateFlow.value = stateFlow.value.copy(
+                    listState = it, cachedList = when (it) {
+                        is Error, Loading -> stateFlow.value.cachedList
+                        is Success -> it.successData.results
+                    }
+                )
             }
         }
     }
@@ -40,23 +50,24 @@ class PokedexListViewModel @JvmOverloads constructor(
 
 @Parcelize
 data class PokedexListState(
-    val listState: AsyncOperation<PokemonList>
+    val listState: AsyncOperation<PokemonList>,
+    val cachedList: List<ListItem> = emptyList()
 ) : Parcelable {
     fun toViewState() =
         when (listState) {
-            is Error -> PokedexListViewState(emptyList(), listState.error, false)
-            Loading -> PokedexListViewState(emptyList(), null, true)
+            is Error -> PokedexListViewState(cachedList.map { it.toPokedexListItem() }, listState.error, false)
+            Loading -> PokedexListViewState(cachedList.map { it.toPokedexListItem() }, null, true)
             is Success -> PokedexListViewState(
-                list = listState.successData.results.map {
-                    PokedexListViewState.PokedexListItem(
-                        name = it.name,
-                        id = it.url.split("/").lastOrNull() ?: ""
-                    )
-                },
+                list = listState.successData.results.map { it.toPokedexListItem() },
                 error = null,
                 isLoading = false
             )
         }
+
+    private fun ListItem.toPokedexListItem() = PokedexListViewState.PokedexListItem(
+        name = name.replaceFirstChar { it.uppercase() },
+        id = url.split("/").lastOrNull { it.isNotEmpty() } ?: ""
+    )
 }
 
 data class PokedexListViewState(

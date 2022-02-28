@@ -7,6 +7,7 @@ import com.example.pokedex.domain.Error
 import com.example.pokedex.domain.Loading
 import com.example.pokedex.domain.Success
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -24,6 +25,7 @@ class GetAllPokemonUseCaseImpl(
         val flow = MutableStateFlow<AsyncOperation<PokemonList>>(Loading)
         scope.launch {
             try {
+                delay(2000)
                 flow.value = Success(repo.getAllPokemon().await())
             } catch (e: Throwable) {
                 flow.value = Error(e)
