@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.pokedex.databinding.FragmentPokedexListBinding
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -52,6 +51,6 @@ class PokedexListFragment : Fragment() {
 
     private fun render(viewState: PokedexListViewState) {
         adapter.submitList(viewState.list)
-        binding.recyclerViewRefresh.isRefreshing = viewState.isLoading
+        binding.recyclerViewRefresh.isRefreshing = viewState.showLoadingSpinner
     }
 }

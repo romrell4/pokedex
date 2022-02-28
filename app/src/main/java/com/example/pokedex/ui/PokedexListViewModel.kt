@@ -4,7 +4,6 @@ import android.os.Parcelable
 import androidx.lifecycle.*
 import com.example.pokedex.DI
 import com.example.pokedex.domain.*
-import com.example.pokedex.usecase.GetAllPokemonUseCase
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
@@ -60,7 +59,7 @@ data class PokedexListState(
             is Success -> PokedexListViewState(
                 list = listState.successData.results.map { it.toPokedexListItem() },
                 error = null,
-                isLoading = false
+                showLoadingSpinner = false
             )
         }
 
@@ -73,7 +72,7 @@ data class PokedexListState(
 data class PokedexListViewState(
     val list: List<PokedexListItem>,
     val error: Throwable? = null,
-    val isLoading: Boolean = false,
+    val showLoadingSpinner: Boolean = false,
 ) {
     data class PokedexListItem(
         val name: String,
