@@ -76,6 +76,7 @@ data class PokedexListViewState(
 ) {
     data class PokedexListItem(
         val name: String,
-        val id: String
+        val id: String,
+        val image_url: String = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
     )
 }

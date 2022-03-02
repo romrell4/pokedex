@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pokedex.databinding.ViewHolderPokedexListItemBinding
+import com.squareup.picasso.Picasso
 
 class PokedexListAdapter : ListAdapter<PokedexListViewState.PokedexListItem, PokedexListViewHolder>(
     object : DiffUtil.ItemCallback<PokedexListViewState.PokedexListItem>() {
@@ -29,5 +30,6 @@ class PokedexListViewHolder(private val binding: ViewHolderPokedexListItemBindin
     fun bind(item: PokedexListViewState.PokedexListItem) {
         binding.nameText.text = item.name
         binding.idText.text = item.id
+        Picasso.get().load(item.image_url).into(binding.pokemonImageHolder)
     }
 }
