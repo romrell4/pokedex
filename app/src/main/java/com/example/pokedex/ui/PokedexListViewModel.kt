@@ -13,12 +13,6 @@ private const val STATE_KEY = "POKEDEX_LIST_STATE_KEY"
 class PokedexListViewModel(
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
-    init {
-        if (savedStateHandle.get<PokedexListState>(STATE_KEY)?.cachedList?.isNotEmpty() != false) {
-            loadPokemonList()
-        }
-    }
-
     val viewStateFlow: Flow<PokedexListViewState> by lazy {
         stateFlow
             .onEach { savedStateHandle[STATE_KEY] = it }
@@ -32,6 +26,12 @@ class PokedexListViewModel(
         )
     )
 
+    init {
+        if (savedStateHandle.get<PokedexListState>(STATE_KEY)?.cachedList?.isNotEmpty() != false) {
+            loadPokemonList()
+        }
+    }
+
     fun loadPokemonList() {
         viewModelScope.launch {
             val getAllPokemonUseCase = DI.instance.getAllPokemonUseCase(viewModelScope)
@@ -44,6 +44,10 @@ class PokedexListViewModel(
                 )
             }
         }
+    }
+
+    fun expandCard() {
+
     }
 }
 
@@ -63,10 +67,20 @@ data class PokedexListState(
             )
         }
 
-    private fun ListItem.toPokedexListItem() = PokedexListViewState.PokedexListItem(
-        name = name.replaceFirstChar { it.uppercase() },
-        id = url.split("/").lastOrNull { it.isNotEmpty() } ?: ""
-    )
+    private fun ListItem.toPokedexListItem(): PokedexListViewState.PokedexListItem {
+        val id = url.split("/").lastOrNull { it.isNotEmpty() } ?: ""
+
+        return PokedexListViewState.PokedexListItem(
+            name = name.replaceFirstChar { it.uppercase() },
+            id = when(id.length) {
+                1 -> "#00$id"
+                2 -> "#0$id"
+                else -> "#$id"
+            },
+            image_url = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/$id.png",
+            expanded = false
+        )
+    }
 }
 
 data class PokedexListViewState(
@@ -77,6 +91,7 @@ data class PokedexListViewState(
     data class PokedexListItem(
         val name: String,
         val id: String,
-        val image_url: String = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png"
+        val image_url: String,
+        val expanded: Boolean
     )
 }

@@ -3,6 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp">
@@ -11,18 +12,29 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/collapsed_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="pokemon_image_holder, name_text, id_text" />
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/expanded_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:constraint_referenced_ids="large_pokemon_view_holder, expanded_id, expanded_name" />
+
         <ImageView
             android:id="@+id/pokemon_image_holder"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginTop="8dp"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             android:layout_marginStart="8dp"
-            android:layout_marginBottom="8dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/id_text"
             app:layout_constraintEnd_toStartOf="@id/name_text"
-            tools:src="@drawable/ic_dashboard_black_24dp"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/name_text"
+            tools:src="@drawable/ic_default_pokemon" />
 
         <TextView
             android:id="@+id/name_text"
@@ -37,6 +49,7 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Bulbasaur" />
 
+
         <TextView
             android:id="@+id/id_text"
             android:layout_width="0dp"
@@ -45,11 +58,51 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/pokemon_image_holder"
             app:layout_constraintTop_toBottomOf="@id/name_text"
-            tools:text="1" />
+            app:layout_constraintBottom_toTopOf="@id/large_pokemon_view_holder"
+            tools:text="#001" />
+
+        <ImageView
+            android:id="@+id/large_pokemon_view_holder"
+            android:layout_width="128dp"
+            android:layout_height="128dp"
+            android:layout_marginBottom="8dp"
+            app:layout_goneMarginTop="8dp"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/id_text"
+            app:layout_constraintBottom_toTopOf="@id/expanded_name"
+            tools:src="@drawable/ic_default_pokemon"/>
+
+        <TextView
+            android:id="@+id/expanded_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="8dp"
+            android:layout_marginBottom="8dp"
+            android:textAlignment="textEnd"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            app:layout_constraintEnd_toStartOf="@id/expanded_id"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/large_pokemon_view_holder"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:text="Bulbasaur" />
+
+        <TextView
+            android:id="@+id/expanded_id"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="8dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            app:layout_constraintStart_toEndOf="@id/expanded_name"
+            app:layout_constraintTop_toTopOf="@id/expanded_name"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/expanded_name"
+            tools:text="#001"/>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </com.google.android.material.card.MaterialCardView>

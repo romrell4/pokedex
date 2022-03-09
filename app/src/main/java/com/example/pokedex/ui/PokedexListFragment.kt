@@ -21,15 +21,11 @@ class PokedexListFragment : Fragment() {
     private val viewModel: PokedexListViewModel by viewModels {
         defaultViewModelProviderFactory
     }
+
     private lateinit var binding: FragmentPokedexListBinding
+    private val adapter: PokedexListAdapter by lazy { PokedexListAdapter(viewModel) }
 
-    private val adapter = PokedexListAdapter()
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentPokedexListBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -37,13 +33,14 @@ class PokedexListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.pokedexListRecyclerView.adapter = adapter
+
         lifecycleScope.launch {
             viewModel.viewStateFlow.collect {
                 render(it)
             }
         }
 
-        binding.pokedexListRecyclerView.adapter = adapter
         binding.recyclerViewRefresh.setOnRefreshListener {
             viewModel.loadPokemonList()
         }
