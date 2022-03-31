@@ -58,7 +58,11 @@ data class PokedexListState(
 ) : Parcelable {
     fun toViewState() =
         when (listState) {
-            is Error -> PokedexListViewState(cachedList.map { it.toPokedexListItem() }, listState.error, false)
+            is Error -> PokedexListViewState(
+                cachedList.map { it.toPokedexListItem() },
+                listState.error,
+                false
+            )
             Loading -> PokedexListViewState(cachedList.map { it.toPokedexListItem() }, null, true)
             is Success -> PokedexListViewState(
                 list = listState.successData.results.map { it.toPokedexListItem() },
@@ -72,7 +76,7 @@ data class PokedexListState(
 
         return PokedexListViewState.PokedexListItem(
             name = name.replaceFirstChar { it.uppercase() },
-            id = when(id.length) {
+            id = when (id.length) {
                 1 -> "#00$id"
                 2 -> "#0$id"
                 else -> "#$id"

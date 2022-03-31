@@ -25,6 +25,9 @@ class PokedexRepositoryImpl(
 //            @Query("offset") offset: String,
 //            @Query("limit") limit: String
         ): Call<PokemonList>
+
+//        @GET("pokemon/{id}")
+//        fun getPokemonDetail(@ParameterName("id") id: String): Call<PokemonList>
     }
 
     override suspend fun getAllPokemon() = client.getAllPokemon()
